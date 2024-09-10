@@ -152,6 +152,8 @@
 .carousel-control-prev,
 .carousel-control-next {
     width: 15%;
+    margin-left: -52px;
+    margin-right: -52px;
 }
 
 .carousel-control-prev-icon,

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'img/logo2.png' %}">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Ubuntu:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">  
+    <link href="{% static 'css/style2.css' %}" rel="stylesheet">   
+
+    <!-- Navbar Start -->
+    {% include 'navBar.html' %}
+    <div class="container">
+        <div class="contact__wrapper shadow-lg mt-n9">
+            <div class="row no-gutters">
+                <div class="col-lg-5 contact-info__wrapper gradient-brand-color p-5 order-lg-2" style="position: relative;">
+                    <div style="margin: 0 auto; max-width: 300px;"> 
+                        <h3 class="color--white mb-3">Contactos de soporte</h3>
+                        <ul class="contact-info__list list-style--none position-relative z-index-101">
+                            <li class="mb-4 pl-4">
+                                <span class="position-absolute"><i class="fas fa-envelope"></i></span> smart_band@hangaroa.ec
+                            </li>
+                            <li class="mb-4 pl-4">
+                                <span class="position-absolute"><i class="fas fa-phone"></i></span> (+593) 959434579
+                            </li>
+                            <li class="mb-4 pl-4">
+                                <span class="position-absolute"><i class="fas fa-map-marker-alt"></i></span> HANGAROA
+                                <br> Urdesa Central, Victor Emilio Estrada y Las Lomas
+                                <br> Guayaquil, Ecuador
+                                <div class="mt-3">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15946.890236156076!2d-79.8902!3d-2.2572148!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa40e59acef7594b%3A0x9ea7a230c87f6b98!2sHangaroa%20S.A!5e0!3m2!1ses-419!2sec!4v1708285165600!5m2!1ses-419!2sec" width="300" height="240" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <figure class="figure position-absolute m-0 opacity-06 z-index-100" style="bottom: 0; right: 10px;"> <!-- Posiciona la figura -->
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="444px" height="626px">
+                            <defs>
+                                <linearGradient id="PSgrad_1" x1="0%" x2="81.915%" y1="57.358%" y2="0%">
+                                    <stop offset="0%" stop-color="rgb(255,255,255)" stop-opacity="1"></stop>
+                                    <stop offset="100%" stop-color="rgb(0,54,207)" stop-opacity="0"></stop>
+                                </linearGradient>
+                            </defs>
+                            <path fill-rule="evenodd" opacity="0.302" fill="rgb(72, 155, 248)" d="M816.210,-41.714 L968.999,111.158 L-197.210,1277.998 L-349.998,1125.127 L816.210,-41.714 Z"></path>
+                            <path fill="url(#PSgrad_1)" d="M816.210,-41.714 L968.999,111.158 L-197.210,1277.998 L-349.998,1125.127 L816.210,-41.714 Z"></path>
+                        </svg>
+                    </figure>
+                </div>
+
+                <div class="col-lg-7 contact-form__wrapper p-5 order-lg-1">
+                    <form action="/registroExitoso/" method="POST" class="contact-form form-validate" novalidate="novalidate">
+                        {% csrf_token %}
+                        <div class="row">
+                            <!--Tipo de identificacion-->
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label class="required-field" for="idType">Tipo de Identificación</label>
+                                    <select class="form-control" id="idType" name="idType">
+                                        <option value="cedula">Cédula</option>
+                                        <option value="pasaporte">Pasaporte</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label class="required-field" for="idNumber">Número de Identificación</label>
+                                    <input type="number" class="form-control" id="idNumber" name="idNumber" placeholder="Cédula o Pasaporte">
+                                </div>
+                            </div>
+
+                            <!--Primer y segundo nombre-->
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label class="required-field" for="firstName">Nombre</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Nombres">
+                                </div>
+                            </div>
+                            
+                            <!--<div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="secondName">Segundo Nombre</label>
+                                    <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Segundo Nombre">
+                                </div>
+                            </div>-->
+
+                            <!-- Apellido Paterno y Apellido Materno -->
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label class="required-field" for="lastName">Apellidos</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Apellidos">
+                                </div>
+                            </div><!--
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="secondLastName">Apellido Materno</label>
+                                    <input type="text" class="form-control" id="secondLastName" name="secondLastName" placeholder="Apellido Materno">
+                                </div>
+                            </div>-->
+        
+                            <!-- Correo Electrónico y Género -->
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label class="required-field" for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Correo Electrónico">
+                                </div>
+                            </div>                           
+                            <!-- Edad y Teléfono -->
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="birthdate">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="birthdate" name="birthdate">
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="phone">Teléfono</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="+593">
+                                </div>
+                            </div>
+                        
+                            <!-- Estado Civil y Rol de Usuario 
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="maritalStatus">Estado Civil</label>
+                                    <select class="form-control" id="maritalStatus" name="maritalStatus">
+                                        <option value="1">Soltero/a</option>
+                                        <option value="2">Casado/a</option>
+                                        <option value="3">Viudo/a</option>
+                                        <option value="4">Divorciado/a</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="userRole">Rol de Usuario</label>
+                                    <select class="form-control" id="userRole" name="userRole">
+                                        <option value="1">Administrador</option>
+                                        <option value="2">Doctor</option>
+                                        <option value="3">Paciente</option>
+                                        <option value="4">Familiar</option>
+                                        <option value="5">Invitado</option>
+                                        
+                                    </select>
+                                </div>
+                            </div>-->
+
+                            <!-- Provincia y Ciudad -->
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="province">Provincia</label>
+                                    <select class="form-control" id="province" name="province">
+                                        <option value="guayas">Guayas</option>
+                                        <option value="pichincha">Pichincha</option>
+                                        
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="city">Ciudad</label>
+                                    <select class="form-control" id="city" name="city">
+                                        <option value="guayaquil">Guayaquil</option>
+                                        <option value="quito">Quito</option>
+                                        
+                                    </select>
+                                </div>
+                            </div>
+
+                             <!-- Dirección -->
+                            <div class="col-sm-12 mb-4">
+                                <div class="form-group">
+                                    <label for="address">Dirección</label>
+                                    <input type="text" class="form-control" id="address" name="address" placeholder="Dirección Completa">
+                                </div>
+                            </div>
+
+                            <!-- Contraseña y Repetir Contraseña (Ajustar IDs y Names) -->
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group row">
+                                    <label for="password">Contraseña</label>
+                                    <div class="col-sm-11">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+                                    </div>
+                                    
+                                    {% if errorP %}
+                                        <p style="color: red;">{{ errorP }}</p>
+                                    {% endif %}   
+                                                                     
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group row">
+
+                                    <label for="confirmPassword">Repetir Contraseña</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Repetir Contraseña">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <span class="toggle-password2" onclick="togglePasswordVisibility2()">👁️</span>
+                                    </div>
+                                                                        
+                                </div>
+                            </div>
+
+                            <!-- Botón de Registro -->
+                            <div class="col-sm-12 mb-4">
+                                <button style="width: 50%; position: relative; left: 25%;" type="submit" name="submit" class="btn btn-primary">Registrarme</button>
+                            </div>
+        
+                        </div>
+                    </form>
+                </div>
+                <!-- End Contact Form Wrapper -->
+        
+            </div>
+        </div>
+</div>
+<script>
+    function togglePasswordVisibility() {
+        //confirmPassword
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.querySelector('.toggle-password');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.textContent = '🔒';
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.textContent = '👁️';
+        }
+        
+    }
+    function togglePasswordVisibility2() {
+        //confirmPassword
+        const passwordInput = document.getElementById('confirmPassword');
+        const passwordIcon = document.querySelector('.toggle-password2');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.textContent = '🔒';
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.textContent = '👁️';
+        }
+        
+    }
+
+</script>
+
+</body>

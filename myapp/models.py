@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.conf import settings
 
 # Create your models here.
 class Genero(models.Model):
@@ -21,7 +23,7 @@ class Libro(models.Model):
     fechaPublicacion= models.DateField()
     descripcion=models.TextField(max_length=500, default="Descripción no disponible")
     generos = models.ManyToManyField(Genero, related_name='libros')
-        
+
     autor = models.ForeignKey(Autor, on_delete=models.SET_NULL, null=True, blank=True, related_name='libros')
 
     def __str__(self):
