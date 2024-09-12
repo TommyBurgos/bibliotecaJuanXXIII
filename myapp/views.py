@@ -166,3 +166,4 @@ def signout(request):
     logout(request)
     rotate_token(request)  # Gira el token CSRF para la nueva sesión
     return redirect('login')
+
