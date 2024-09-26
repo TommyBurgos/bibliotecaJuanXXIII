@@ -5,3 +5,5 @@ from .models import *
 admin.site.register(Genero)
 admin.site.register(Autor)
 admin.site.register(Libro)
+admin.site.register(HistorialInventario)
+admin.site.register(Inventario)

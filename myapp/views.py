@@ -4,9 +4,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.views.decorators.csrf import ensure_csrf_cookie
+from .inventory_services import prestar_libro, devolver_libro
+from django.utils.timezone import now, timedelta
 from django.middleware.csrf import rotate_token
+from .models import Libro, HistorialInventario, Inventario
 from django.db.models import Q
 from user.models import User
+from .forms import LibroForm
 import re
 
 
@@ -152,9 +156,28 @@ def redireccionLogin(request):
 
 @login_required
 def admin_dashboard(request):
-    print("entre a la funcion admin")
-    # Código de la vista del administrador
-    return render(request, 'vistaAdmin/index.html')
+    #Datos usuario actual
+    user = request.user
+    imgPerfil=user.picture
+    # 1. Cantidad de usuarios cuyo rol es igual a 2
+    cantidad_usuarios_rol_2 = User.objects.filter(rol__id=2).count()
+    
+    # 2. Cantidad de libros registrados
+    cantidad_libros = Libro.objects.count()
+
+    # 3. Lista de la cantidad de estudiantes registrados en la última semana
+    ultima_semana = now() - timedelta(days=7)
+    estudiantes_ultima_semana = User.objects.filter(rol__id=2, date_joined__gte=ultima_semana)
+
+    # Pasar los datos al contexto
+    context = {
+        'cantidad_usuarios_rol_2': cantidad_usuarios_rol_2,
+        'cantidad_libros': cantidad_libros,
+        'estudiantes_ultima_semana': estudiantes_ultima_semana,
+        'imgPerfil': imgPerfil,
+        'usuario':user.username
+    }    
+    return render(request, 'vistaAdmin/index.html', context)
 
 
 @login_required
@@ -167,3 +190,56 @@ def signout(request):
     rotate_token(request)  # Gira el token CSRF para la nueva sesión
     return redirect('login')
 
+@login_required
+def vistaRegistroLibro(request):
+    libros = Libro.objects.all()
+    libros_con_inventario = []
+    user=request.user
+    imgPerfil=user.picture
+    for libro in libros:
+        try:
+            inventario = Inventario.objects.get(libro=libro)
+        except Inventario.DoesNotExist:
+            inventario = None
+        libros_con_inventario.append({
+            'libro': libro,
+            'inventario': inventario
+        })
+
+    if request.method == 'POST':
+        form = LibroForm(request.POST, request.FILES)  # Asegúrate de manejar archivos correctamente
+        if form.is_valid():
+            try:
+                # Guarda el nuevo libro a través del formulario
+                form.save()
+                print("Se guardó correctamente")
+                return render(request, 'vistaAdmin/registroLibro.html', {'form': LibroForm(), 'libros': libros})
+            except Exception as e:
+                print(f"No se pudo guardar el libro. Error: {e}")
+                return HttpResponse(f"Error al guardar el libro: {e}")
+        else:
+            print("Formulario no válido")
+            print(form.errors)
+            return render(request, 'vistaAdmin/registroLibro.html', {'form': form, 'libros': libros})
+    
+    return render(request, 'vistaAdmin/registroLibro.html', {
+        'form': LibroForm(),
+        'libros': libros,
+        'libros_con_inventario': libros_con_inventario,
+        'imgPerfil': imgPerfil,
+        'usuario':user.username
+    })
+
+
+
+# Vista para ver el historial
+def ver_historial(request, libro_id):
+    libro = get_object_or_404(Libro, id=libro_id)
+    historial = HistorialInventario.objects.filter(libro=libro).order_by('-fecha_cambio')
+    return render(request, 'historial_libro.html', {'libro': libro, 'historial': historial})
+
+def vistaActualizarLibro(request):    
+    return render(request,"vistaAdmin/actualizarLibro.html")
+
+def vistaEliminarLibro(request):    
+    return render(request,"vistaAdmin/eliminarLibro.html")
