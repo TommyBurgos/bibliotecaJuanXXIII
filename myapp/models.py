@@ -26,6 +26,8 @@ class Libro(models.Model):
     generos = models.ManyToManyField(Genero, related_name='libros')
     imgPortada = models.ImageField(upload_to='libros/', default='libros/defectoLibro.png')
     autor = models.ForeignKey(Autor, on_delete=models.SET_NULL, null=True, blank=True, related_name='libros')
+    
+
 
     def __str__(self):
         return self.nombre
@@ -53,3 +55,21 @@ class HistorialInventario(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     accion = models.CharField(max_length=20)
     fecha_cambio = models.DateTimeField(auto_now_add=True)
+
+#SOLICITUDES
+class SolicitudLibro(models.Model):
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('aceptada', 'Aceptada'),
+        ('rechazada', 'Rechazada'),
+    ]
+    
+    estudiante = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='solicitudes')
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE, related_name='solicitudes')
+    fecha_solicitud = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
+    fecha_respuesta = models.DateTimeField(null=True, blank=True)
+    observacion = models.TextField(null=True, blank=True)  # Para que el administrador agregue comentarios
+
+    def __str__(self):
+        return f"Solicitud de {self.estudiante.username} para {self.libro.nombre}"

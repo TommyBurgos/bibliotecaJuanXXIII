@@ -3,7 +3,7 @@
     <div class="sidebar-logo">
       <!-- Logo Header -->
       <div class="logo-header" data-background-color="dark">
-        <a href="/dashboard-adm" class="logo">
+        <a href="/student_dashboard/" class="logo">
           <img
             src="{% static 'img/logoNat2.png' %}"
             alt="navbar brand"
@@ -32,7 +32,7 @@
           <li class="nav-item active">
             <a
               data-bs-toggle="collapse"
-              href="/dashboard-adm"
+              href="/student_dashboard/"
               class="collapsed"
               aria-expanded="false"
             >
@@ -55,20 +55,20 @@
             <div class="collapse" id="base">
               <ul class="nav nav-collapse">
                 <li>
-                  <a href="/dashboard-adm/registroLibros/">
-                    <span class="sub-item">Añadir libro</span>
+                  <a href="/student_dashboard/solicitarLibro/">
+                    <span class="sub-item">Solicitar nuevo libro</span>
                   </a>
                 </li>
                 <li>
-                  <a href="/dashboard-adm/actualizarLibros/">
-                    <span class="sub-item">Actualizar información</span>
+                  <a href="/student_dashboard/misLibrosLeidos/">
+                    <span class="sub-item">Mis libros leidos</span>
                   </a>
-                </li>
+                </li>                
                 <li>
-                  <a href="/dashboard-adm/eliminarLibros/">
-                    <span class="sub-item">Eliminar libro</span>
+                  <a href="/student_dashboard/solicitudesRealizadas/">
+                    <span class="sub-item">Ver mis solicitudes</span>
                   </a>
-                </li>                    
+                </li>                
               </ul>
             </div>
           </li>
@@ -94,28 +94,7 @@
                 
               </ul>
             </div>
-          </li>
-          <li class="nav-item">
-            <a data-bs-toggle="collapse" href="#tables">
-              <i class="fas fa-table"></i>
-              <p>Tables</p>
-              <span class="caret"></span>
-            </a>
-            <div class="collapse" id="tables">
-              <ul class="nav nav-collapse">
-                <li>
-                  <a href="tables/tables.html">
-                    <span class="sub-item">Basic Table</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="tables/datatables.html">
-                    <span class="sub-item">Datatables</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>              
+          </li>                     
         </ul>
       </div>
     </div>

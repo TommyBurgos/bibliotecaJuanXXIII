@@ -1,4 +1,5 @@
 # from django.shortcuts import render
+from datetime import timezone
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -7,7 +8,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from .inventory_services import prestar_libro, devolver_libro
 from django.utils.timezone import now, timedelta
 from django.middleware.csrf import rotate_token
-from .models import Libro, HistorialInventario, Inventario
+from .models import Libro, HistorialInventario, Inventario, SolicitudLibro
+from django.contrib import messages
 from django.db.models import Q
 from user.models import User
 from .forms import LibroForm
@@ -159,6 +161,8 @@ def admin_dashboard(request):
     #Datos usuario actual
     user = request.user
     imgPerfil=user.picture
+    total_solicitudes = SolicitudLibro.objects.count()
+
     # 1. Cantidad de usuarios cuyo rol es igual a 2
     cantidad_usuarios_rol_2 = User.objects.filter(rol__id=2).count()
     
@@ -175,6 +179,7 @@ def admin_dashboard(request):
         'cantidad_libros': cantidad_libros,
         'estudiantes_ultima_semana': estudiantes_ultima_semana,
         'imgPerfil': imgPerfil,
+        'total_solicitudes': total_solicitudes,
         'usuario':user.username
     }    
     return render(request, 'vistaAdmin/index.html', context)
@@ -182,8 +187,13 @@ def admin_dashboard(request):
 
 @login_required
 def student_dashboard(request):
+    #Datos usuario actual
+    user = request.user
+    imgPerfil=user.picture
     # Código de la vista del estudiante
-    return render(request, 'estudiante/index.html')
+    return render(request, 'estudiante/index.html',{
+        'imgPerfil': imgPerfil,
+    })
 
 def signout(request):
     logout(request)
@@ -193,7 +203,11 @@ def signout(request):
 @login_required
 def vistaRegistroLibro(request):
     libros = Libro.objects.all()
+    print("estos son los libros")
+    print(libros)
     libros_con_inventario = []
+    print("inventario")
+    print(libros_con_inventario)
     user=request.user
     imgPerfil=user.picture
     for libro in libros:
@@ -231,15 +245,204 @@ def vistaRegistroLibro(request):
     })
 
 
+def vistaAdminRevisarSolicitudes(request):
+    solicitudesPendientes = SolicitudLibro.objects.filter(estado='pendiente')
+    print("aqui viene el for de solicitudes")
+    for soli in solicitudesPendientes:
+        print(soli.id)
+    print(solicitudesPendientes)
+     # Obtener todas las solicitudes de libros
+    solicitudes = SolicitudLibro.objects.select_related('estudiante', 'libro').all()
+    # Enviar las solicitudes a la plantilla
+    context = {
+        'solicitudes': solicitudes,
+    }
+    if request.method == "POST":
+        solicitud_id = request.POST.get('solicitud_id')
+        accion = request.POST.get('nuevo_estado')  # 'aceptar' o 'rechazar'
+        print("esta es la accion gg")
+        print(accion)
+
+        # Obtén la solicitud
+        solicitud = get_object_or_404(SolicitudLibro, id=solicitud_id)
+        print(solicitud)
+
+        # Obtén el inventario del libro solicitado
+        inventario = Inventario.objects.filter(libro=solicitud.libro).first()
+        print(inventario)
+        print(not inventario)
+
+        if not inventario:
+            # Maneja el caso en que no se haya registrado un inventario para ese libro
+            messages.error(request, "No se ha encontrado un inventario para este libro.")
+            return redirect('dashboard-adm')  # Cambia esto por la vista correspondiente
+        print("opciones")
+        print(accion == 'aprobada')
+        print(accion == 'rechazada')
+        print(inventario.cantActual)
+        print("previo al if")
+        if accion == 'aprobada':
+            print("dentro del primer if")
+            print(inventario.cantActual)
+            # Verifica si hay stock disponible
+            if inventario.cantActual > 0:
+                print("ingrese a este if")
+                # Disminuye la cantidad de libros en el inventario
+                inventario.cantActual -= 1
+                print(inventario.cantActual)
+                inventario.save()
+
+                # Actualiza el estado de la solicitud a 'aceptada'
+                solicitud.estado = 'aprobada'
+                solicitud.save()
+
+                messages.success(request, "Solicitud aceptada y libro asignado.")
+            else:
+                messages.error(request, "No hay suficiente stock para aceptar esta solicitud.")
+        elif accion == 'rechazada':
+            # Actualiza el estado de la solicitud a 'rechazada'
+            solicitud.estado = 'rechazada'
+            solicitud.save()
+
+            messages.success(request, "Solicitud rechazada.")   
+        return render(request,'vistaAdmin/revisarSolicitudes.html',context) 
+    
+    
+    print("SOLICITUDES")    
+    print(solicitudesPendientes)
+    return render(request,'vistaAdmin/revisarSolicitudes.html',context)
+
+def gestionCambioSolicitud(request,solicitud_id):
+    solicitud_id = request.POST.get('solicitud_id')
+    print(solicitud_id)
+    accion = request.POST.get('nuevo_estado')  # 'aceptar' o 'rechazar'
+    print("la accion")
+    print(accion)
+
+    # Obtén la solicitud
+    solicitud = get_object_or_404(SolicitudLibro, id=solicitud_id)
+
+    # Obtén el inventario del libro solicitado
+    inventario = Inventario.objects.filter(libro=solicitud.libro).first()
+    print(inventario)
+
+    if not inventario:
+        print("Entre al not del inventario")
+        # Maneja el caso en que no se haya registrado un inventario para ese libro
+        messages.error(request, "No se ha encontrado un inventario para este libro.")
+        return redirect('dashboard-adm')  # Cambia esto por la vista correspondiente
+    print(accion == 'aceptar')
+    if accion == 'aprobada':
+        print("Verifica si hay stock disponible")
+        if inventario.cantActual > 0:
+            aceptar_solicitud(request,solicitud_id)    
+    elif accion == 'rechazada':
+        rechazar_solicitud(request,solicitud_id)
+    return redirect('dashboard-adm')  # Cambia esto por la vista correspondiente
+
+def aceptar_solicitud(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudLibro, id=solicitud_id)
+    inventario = Inventario.objects.filter(libro=solicitud.libro).first()
+    print("esta es la solicitud")
+    print(solicitud)
+    if inventario.cantActual > 0:
+        inventario.cantActual -= 1
+        inventario.save()
+        # Actualiza el estado de la solicitud a 'aceptada'
+        solicitud.estado = 'aceptada'
+        solicitud.save()
+        messages.success(request, "Solicitud aceptada y libro asignado.")
+
+        return redirect('adminRevisarSolicitudes')
+    else:
+        return HttpResponse("No hay suficientes copias disponibles")
+
+def rechazar_solicitud(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudLibro, id=solicitud_id)
+    solicitud.estado = 'rechazada'
+    solicitud.fecha_respuesta = timezone.now()
+    solicitud.save()
+    return redirect('adminRevisarSolicitudes')
+
 
 # Vista para ver el historial
 def ver_historial(request, libro_id):
+    user = request.user
+    imgPerfil=user.picture
     libro = get_object_or_404(Libro, id=libro_id)
     historial = HistorialInventario.objects.filter(libro=libro).order_by('-fecha_cambio')
-    return render(request, 'historial_libro.html', {'libro': libro, 'historial': historial})
+    return render(request, 'historial_libro.html', {'libro': libro, 'imgPerfil': imgPerfil, 'historial': historial})
 
-def vistaActualizarLibro(request):    
-    return render(request,"vistaAdmin/actualizarLibro.html")
+def vistaActualizarLibro(request):
+    user = request.user
+    imgPerfil=user.picture 
+    return render(request,"vistaAdmin/actualizarLibro.html",{
+        'imgPerfil': imgPerfil
+    } )
 
 def vistaEliminarLibro(request):    
-    return render(request,"vistaAdmin/eliminarLibro.html")
+    user = request.user
+    imgPerfil=user.picture 
+    return render(request,"vistaAdmin/eliminarLibro.html", {'imgPerfil': imgPerfil})
+
+
+#VISTA DEL ESTUDIANTE
+def vistaSolicitarLibro(request):
+    user = request.user
+    imgPerfil=user.picture 
+    libros = Libro.objects.all()
+    print("estos son los libros")
+    print(libros)
+    libros_con_inventario = []
+    print(libros_con_inventario)
+    user=request.user
+    imgPerfil=user.picture
+    for libro in libros:
+        try:
+            inventario = Inventario.objects.get(libro=libro)
+        except Inventario.DoesNotExist:
+            inventario = None
+        if inventario!= None:
+            libros_con_inventario.append({
+                'libro': libro,
+                'inventario': inventario
+            })
+    print(libros_con_inventario)
+    return render(request, "estudiante/solicitarLibro.html",{        
+        'libros': libros,
+        'libros_con_inventario': libros_con_inventario,
+        'imgPerfil': imgPerfil,
+        'usuario':user.username
+    })
+
+def solicitar_libro(request, libro_id):
+    user = request.user
+    imgPerfil=user.picture 
+    libro = get_object_or_404(Libro, id=libro_id)
+    estudiante = request.user
+    SolicitudLibro.objects.create(estudiante=estudiante, libro=libro)
+    return redirect('solicitarLibro')  # Redireccionar a una página adecuada
+
+
+def vistaMisLecturas(request):
+    user = request.user
+    imgPerfil=user.picture 
+    return render(request, "estudiante/misLecturas.html",{'imgPerfil': imgPerfil})
+
+def vistaLibrosLeidos(request):
+    user = request.user
+    imgPerfil=user.picture 
+    return render(request, "estudiante/librosLeidos.html",{'imgPerfil': imgPerfil})
+
+def vistaSolicitudesRealizadas(request):
+    user = request.user
+    imgPerfil=user.picture 
+    estudiante = request.user
+    solicitudes = SolicitudLibro.objects.filter(estudiante=estudiante).order_by('-fecha_solicitud')
+    return render(request, "estudiante/soliRealizadas.html",{
+        'imgPerfil': imgPerfil, 'solicitudes': solicitudes})
+
+def vistaFavoritos(request):
+    user = request.user
+    imgPerfil=user.picture 
+    return render(request, "estudiante/favoritos.html",{'imgPerfil': imgPerfil})

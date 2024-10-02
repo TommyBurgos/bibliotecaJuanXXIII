@@ -44,150 +44,76 @@
       {% include 'estudiante/sideBar.html' %}
       <!-- End Sidebar -->
       {% include 'estudiante/header.html' %}
-      <div class="main-panel">
-        
+      <div class="main-panel">        
+        <div class="container">  
+            <h2 style="font-family:Gowun Batang, serif ; background-color: #eee; border-radius: 20px;text-align: center; margin: 20px 10px;">LIBROS DISPONIBLES</h2>          
+            <form method="GET">
+                <div class="input-group" style="margin: 10px;">              
+                  <input type="text"name="buscar"  class="form-control" id="navbar-search-input" placeholder="Buscar..." aria-label="search" aria-describedby="search" value="{{ request.GET.buscar }}">
+                  <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                    <button class="input-group-text" id="search">                             
+                        <i class="icon-search"><i>                                                            
+                    </button>
+                  </div>
+              </div>
+              </form>
+              <div class="row" style="margin: 10px 20px;">                
+                {% for item in libros_con_inventario %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card" style="width: 18rem; min-height: 12rem;">
+                            <img src="{{ item.libro.imgPortada.url }}" class="card-img-top" alt="..." style="height: 300px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.libro.nombre }}</h5>
+                                <p class="card-text">{{ item.libro.descripcion }}</p>
+                                <p class="card-text"><small>{{ item.libro.autor }}</small></p>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLibro{{ item.libro.id }}">
+                                    Solicitar libro
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <form  action="/student_dashboard/solicitarLibro/{{ item.libro.id }}" method="POST" enctype="multipart/form-data" class="col-md-1 mb-1 container mt-5">
+                        {% csrf_token %}
+                        <div class="modal fade" id="modalLibro{{ item.libro.id }}" tabindex="-1" aria-labelledby="modalLabel{{ item.libro.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalLabel{{ item.libro.id }}">{{ item.libro.nombre }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Descripción:</strong> {{ item.libro.descripcion }}</p>
+                                        <p><strong>Autor:</strong> {{ item.libro.autor }}</p>
+                                        <p><strong>Cantidad disponible:</strong> 
+                                            {% if item.inventario %}
+                                                {{ item.inventario.cantActual }}
+                                            {% else %}
+                                                Aún no inventariado
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-primary">Confirmar registro</button>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="container">
-          <div class="page-inner">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-              <div>
-                <h3 class="fw-bold mb-3"style="  font-family: 'Gowun Batang', serif;">Dashboard</h3>
-                <h6 class="op-7 mb-2">Añade, elimina o actualiza libros registrados</h6>
-                
-              </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="/student_dashboard/solicitarLibro/" class="btn btn-primary btn-round me-2">
-                  <i class="bi bi-folder-plus"></i>
-                  Solicitar nuevo libro
-                </a>
-                <a href="/dashboard-adm/actualizarLibros/" class="btn btn-primary btn-round me-2">
-                  <i class="bi bi-arrow-repeat"></i>
-                  Actualizar
-                </a>                
-              </div>
+                    </form>
+                    
+                {% if forloop.counter|divisibleby:3 %}
+                    </div><div class="row" style="margin: 10px 20px;">
+                {% endif %}
+                {% endfor %}
             </div>
-            <div class="row">
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <a href="">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/misLecturas/"> <div class="icon-big text-center icon-primary bubble-shadow-small">
-                          <i class="bi bi-person-up"></i> 
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                         <div class="numbers">
-                          <p class="card-category">Mis lecturas</p>
-                          <h4 class="card-title">{{ cantidad_usuarios_rol_2 }}</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/misLibrosLeidos/"><div
-                          class="icon-big text-center icon-info bubble-shadow-small"
-                        >
-                        <i class="bi bi-journal-arrow-up"></i>
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Libros Leidos</p>
-                          <h4 class="card-title">{{ cantidad_libros }}</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/solicitudesRealizadas/"><div
-                          class="icon-big text-center icon-success bubble-shadow-small">
-                          <i class="bi bi-envelope-fill"></i>
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Solicitudes realizadas</p>
-                          <h4 class="card-title">$ 1,345</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/misFavoritos/"><div class="icon-big text-center icon-success bubble-shadow-small">
-                        <i class="bi bi-star-fill"></i>
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Mis favoritos</p>
-                          <h4 class="card-title">$ 1,345</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>
-              
-              
-            </div>
-            <div class="row">
-              <!--MIS SUGERENCIAS-->
-              <h2 style="font-family: 'Gowun Batang', serif; margin-left: 10px;"><b>MIS SUGERENCIAS</b></h2>
-              
-              
-              </div>
-            </div>                        
-          </div>
+        </div>                        
         </div>
-        <!--
-        <footer class="footer">
-          <div class="container-fluid d-flex justify-content-between">
-            <nav class="pull-left">
-              <ul class="nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="http://www.themekita.com">
-                    ThemeKita
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Help </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Licenses </a>
-                </li>
-              </ul>
-            </nav>
-            <div class="copyright">
-              2024, made with <i class="fa fa-heart heart text-danger"></i> by
-              <a href="http://www.themekita.com">ThemeKita</a>
-            </div>
-            <div>
-              Distributed by
-              <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-            </div>
-          </div>
-        </footer>-->
+    </div>
+       
       </div>
 
       <!-- Custom template | don't include it in your project! -->

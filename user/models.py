@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from myapp.models import Libro
 import datetime
 # Create your models here.
 class Rol(models.Model):
@@ -14,6 +15,7 @@ class User(AbstractUser):
     ciudad=models.CharField(max_length=100, blank=True)
     direccion=models.CharField(max_length=300, blank=True)
     rol=models.ForeignKey(Rol,on_delete=models.CASCADE,default=2)
+    libros_leidos = models.ManyToManyField(Libro, related_name='usuarios_que_leyeron', blank=True)
     
     
 

@@ -46,120 +46,52 @@
       {% include 'estudiante/header.html' %}
       <div class="main-panel">
         
-
         <div class="container">
-          <div class="page-inner">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-              <div>
-                <h3 class="fw-bold mb-3"style="  font-family: 'Gowun Batang', serif;">Dashboard</h3>
-                <h6 class="op-7 mb-2">Añade, elimina o actualiza libros registrados</h6>
-                
-              </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="/student_dashboard/solicitarLibro/" class="btn btn-primary btn-round me-2">
-                  <i class="bi bi-folder-plus"></i>
-                  Solicitar nuevo libro
-                </a>
-                <a href="/dashboard-adm/actualizarLibros/" class="btn btn-primary btn-round me-2">
-                  <i class="bi bi-arrow-repeat"></i>
-                  Actualizar
-                </a>                
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <a href="">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/misLecturas/"> <div class="icon-big text-center icon-primary bubble-shadow-small">
-                          <i class="bi bi-person-up"></i> 
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                         <div class="numbers">
-                          <p class="card-category">Mis lecturas</p>
-                          <h4 class="card-title">{{ cantidad_usuarios_rol_2 }}</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/misLibrosLeidos/"><div
-                          class="icon-big text-center icon-info bubble-shadow-small"
-                        >
-                        <i class="bi bi-journal-arrow-up"></i>
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Libros Leidos</p>
-                          <h4 class="card-title">{{ cantidad_libros }}</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/solicitudesRealizadas/"><div
-                          class="icon-big text-center icon-success bubble-shadow-small">
-                          <i class="bi bi-envelope-fill"></i>
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Solicitudes realizadas</p>
-                          <h4 class="card-title">$ 1,345</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <a href="/student_dashboard/misFavoritos/"><div class="icon-big text-center icon-success bubble-shadow-small">
-                        <i class="bi bi-star-fill"></i>
-                        </div></a>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Mis favoritos</p>
-                          <h4 class="card-title">$ 1,345</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>
-              
-              
-            </div>
-            <div class="row">
-              <!--MIS SUGERENCIAS-->
-              <h2 style="font-family: 'Gowun Batang', serif; margin-left: 10px;"><b>MIS SUGERENCIAS</b></h2>
-              
-              
-              </div>
-            </div>                        
-          </div>
+          <h2 style="font-family:Gowun Batang, serif ; text-align: center; background-color: #e1e1ec; border-radius: 5px; margin-bottom: 20px;">Solicitudes realizadas</h2>
+          <table class="table table-bordered" style="margin: 20px;">
+            <thead>
+                <tr>
+                    <th>Libro</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Estado</th>
+                    <th>Observación</th>
+                    <th>Fecha de Respuesta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in solicitudes %}
+                <tr>
+                    <td>{{ solicitud.libro.nombre }}</td>
+                    <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if solicitud.estado == 'pendiente' %}
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                        {% elif solicitud.estado == 'aprobada' %}
+                            <span class="badge bg-success">aprobada</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rechazada</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ solicitud.observacion|default:"-" }}</td>
+                    <td>
+                        {% if solicitud.fecha_respuesta %}
+                            {{ solicitud.fecha_respuesta|date:"d/m/Y H:i" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No has realizado ninguna solicitud.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+          
+        </div>                        
         </div>
+    </div>
         <!--
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
