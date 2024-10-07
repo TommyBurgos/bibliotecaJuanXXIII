@@ -10,7 +10,7 @@ class Rol(models.Model):
         return self.nombre
 
 class User(AbstractUser):
-    picture=models.ImageField('Imagen',upload_to='users/', max_length=255, null=True, blank=True)    
+    picture=models.ImageField('Imagen',upload_to='users/', max_length=255, null=True, blank=True, default='users/cr7.jpg')  
     nacimiento = models.DateField(default=datetime.date.today)
     ciudad=models.CharField(max_length=100, blank=True)
     direccion=models.CharField(max_length=300, blank=True)
