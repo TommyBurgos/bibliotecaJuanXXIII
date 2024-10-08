@@ -309,11 +309,19 @@
               aria-expanded="false"
             >
               <div class="avatar-sm">
+                {% if imgPerfil %}
+                <img src="{{ imgPerfil.url }}"
+                alt="..."
+                class="avatar-img rounded-circle">
+                {% else %}
+                <img src="" alt="Default Profile Picture">
+                {% endif %}
+<!--
                 <img
                   src="{{ imgPerfil.url }}"
                   alt="..."
                   class="avatar-img rounded-circle"
-                />
+                />-->
               </div>
               <span class="profile-username">
                 <span class="op-7">Hi,</span>
