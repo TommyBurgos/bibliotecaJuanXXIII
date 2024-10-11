@@ -146,7 +146,6 @@ def custom_login(request):
             return render(request, 'login.html', {'error': 'Credenciales inválidas'})
     return redirect('login')
 
-
 #PROOOOOBANDO
 
 #CIERRE DE PRUEB
@@ -248,6 +247,8 @@ def vistaRegistroLibro(request):
 def vistaAdminRevisarSolicitudes(request):
     solicitudesPendientes = SolicitudLibro.objects.filter(estado='pendiente')
     print("aqui viene el for de solicitudes")
+    user=request.user
+    imgPerfil=user.picture
     for soli in solicitudesPendientes:
         print(soli.id)
     print(solicitudesPendientes)
@@ -256,6 +257,8 @@ def vistaAdminRevisarSolicitudes(request):
     # Enviar las solicitudes a la plantilla
     context = {
         'solicitudes': solicitudes,
+        'usuario':user.username,
+        'imgPerfil': imgPerfil
     }
     if request.method == "POST":
         solicitud_id = request.POST.get('solicitud_id')
@@ -377,13 +380,14 @@ def vistaActualizarLibro(request):
     user = request.user
     imgPerfil=user.picture 
     return render(request,"vistaAdmin/actualizarLibro.html",{
-        'imgPerfil': imgPerfil
+        'imgPerfil': imgPerfil,
+        'usuario':user.username,
     } )
 
 def vistaEliminarLibro(request):    
     user = request.user
     imgPerfil=user.picture 
-    return render(request,"vistaAdmin/eliminarLibro.html", {'imgPerfil': imgPerfil})
+    return render(request,"vistaAdmin/eliminarLibro.html", {'imgPerfil': imgPerfil, 'usuario':user.username})
 
 
 #VISTA DEL ESTUDIANTE

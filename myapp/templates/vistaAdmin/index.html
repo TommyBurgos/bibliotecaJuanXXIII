@@ -230,11 +230,13 @@
                       {% for estudiante in estudiantes_ultima_semana %}
                       <div class="item-list">
                         <div class="avatar">
-                          <img
-                            src="{{ estudiante.picture.url }}"
+                          {% if estudiante.picture %}
+                            <img src="{{ estudiante.picture.url }}"
                             alt="..."
-                            class="avatar-img rounded-circle"
-                          />
+                            class="avatar-img rounded-circle">
+                            {% else %}
+                            <img src="" alt="Default Profile Picture">
+                            {% endif %}                          
                         </div>
                         <div class="info-user ms-3">
                           <div class="username">{{ estudiante.username }}</div>
@@ -350,7 +352,7 @@
                     <div class="card-head-row card-tools-still-right">
                       <div class="card-title">Historial de transacciones</div>
                       <div class="card-tools">
-                        <div class="dropdown">
+                        <div class="dropdown">                          
                           <button
                             class="btn btn-icon btn-clean me-0"
                             type="button"
