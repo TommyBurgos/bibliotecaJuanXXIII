@@ -243,7 +243,7 @@ def vistaRegistroLibro(request):
         'usuario':user.username
     })
 
-
+@login_required
 def vistaAdminRevisarSolicitudes(request):
     solicitudesPendientes = SolicitudLibro.objects.filter(estado='pendiente')
     print("aqui viene el for de solicitudes")
@@ -315,6 +315,7 @@ def vistaAdminRevisarSolicitudes(request):
     print(solicitudesPendientes)
     return render(request,'vistaAdmin/revisarSolicitudes.html',context)
 
+
 def gestionCambioSolicitud(request,solicitud_id):
     solicitud_id = request.POST.get('solicitud_id')
     print(solicitud_id)
@@ -376,6 +377,7 @@ def ver_historial(request, libro_id):
     historial = HistorialInventario.objects.filter(libro=libro).order_by('-fecha_cambio')
     return render(request, 'historial_libro.html', {'libro': libro, 'imgPerfil': imgPerfil, 'historial': historial})
 
+@login_required
 def vistaActualizarLibro(request):
     user = request.user
     imgPerfil=user.picture 
@@ -384,6 +386,7 @@ def vistaActualizarLibro(request):
         'usuario':user.username,
     } )
 
+@login_required
 def vistaEliminarLibro(request):    
     user = request.user
     imgPerfil=user.picture 
@@ -391,6 +394,7 @@ def vistaEliminarLibro(request):
 
 
 #VISTA DEL ESTUDIANTE
+@login_required
 def vistaSolicitarLibro(request):
     user = request.user
     imgPerfil=user.picture 
@@ -418,7 +422,7 @@ def vistaSolicitarLibro(request):
         'imgPerfil': imgPerfil,
         'usuario':user.username
     })
-
+@login_required
 def solicitar_libro(request, libro_id):
     user = request.user
     imgPerfil=user.picture 
@@ -427,17 +431,19 @@ def solicitar_libro(request, libro_id):
     SolicitudLibro.objects.create(estudiante=estudiante, libro=libro)
     return redirect('solicitarLibro')  # Redireccionar a una página adecuada
 
-
+@login_required
 def vistaMisLecturas(request):
     user = request.user
     imgPerfil=user.picture 
     return render(request, "estudiante/misLecturas.html",{'imgPerfil': imgPerfil})
 
+@login_required
 def vistaLibrosLeidos(request):
     user = request.user
     imgPerfil=user.picture 
     return render(request, "estudiante/librosLeidos.html",{'imgPerfil': imgPerfil})
 
+@login_required
 def vistaSolicitudesRealizadas(request):
     user = request.user
     imgPerfil=user.picture 
@@ -446,6 +452,7 @@ def vistaSolicitudesRealizadas(request):
     return render(request, "estudiante/soliRealizadas.html",{
         'imgPerfil': imgPerfil, 'solicitudes': solicitudes})
 
+@login_required
 def vistaFavoritos(request):
     user = request.user
     imgPerfil=user.picture 
