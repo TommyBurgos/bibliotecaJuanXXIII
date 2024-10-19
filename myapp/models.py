@@ -49,6 +49,22 @@ class Inventario(models.Model):
         if not (self.cantMin <= self.cantActual <= self.cantMax):
             raise ValidationError("La cantidad actual debe estar entre la cantidad mínima y máxima.")
 
+class LibroDigital(models.Model):
+    titulo = models.CharField(max_length=255)
+    autor = models.CharField(max_length=255)
+    descripcion = models.TextField(null=True, blank=True)
+    archivo_pdf = models.FileField(upload_to='libros/digital/pdf/')
+    fecha_publicacion = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.titulo
+
+    # Opción para obtener la URL del archivo PDF si es necesario
+    def obtener_pdf_url(self):
+        if self.archivo_pdf:
+            return self.archivo_pdf.url
+        return None
+
 class HistorialInventario(models.Model):
     libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
     cantidad_cambio = models.IntegerField()

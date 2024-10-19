@@ -6,15 +6,26 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.views.decorators.csrf import ensure_csrf_cookie
 from .inventory_services import prestar_libro, devolver_libro
+from django.http import FileResponse
 from django.utils.timezone import now, timedelta
 from django.middleware.csrf import rotate_token
-from .models import Libro, HistorialInventario, Inventario, SolicitudLibro
+from .models import Libro, HistorialInventario, Inventario, SolicitudLibro, LibroDigital
 from django.contrib import messages
 from django.db.models import Q
 from user.models import User
 from .forms import LibroForm
 import re
 
+
+def lista_libros_digitales(request):
+    libros = LibroDigital.objects.all()
+    return render(request, 'vistaAdmin/lista_libros_digitales.html', {'libros': libros})
+
+def ver_libro_digital(request, libro_id):
+    libro = get_object_or_404(LibroDigital, pk=libro_id)
+    response = FileResponse(open(libro.archivo_pdf.path, 'rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{libro.titulo}.pdf"'
+    return response
 
 # Create your views here.
 def hello(request):
@@ -457,3 +468,4 @@ def vistaFavoritos(request):
     user = request.user
     imgPerfil=user.picture 
     return render(request, "estudiante/favoritos.html",{'imgPerfil': imgPerfil})
+
