@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <link rel="icon" href="assets/img/kaiadmin/favicon.ico" type="image/x-icon"/>
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    
+
+    <!-- Fonts and icons -->
+    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["assets/css/fonts.min.css"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/plugins.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/kaiadmin.min.css' %}" rel="stylesheet">    
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="{% static 'css/demo.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'vistaAdmin/sidebar.html' %}
+      <!-- End Sidebar -->
+      {% include 'vistaAdmin/header.html' %}
+
+      <div class="main-panel">        
+        <div class="container">            
+            <div class="content-wrapper">
+              <div class="row">
+                  <div class="row"style="padding-botton: 5%;">
+                      <div class="row col-12" style="padding-left: 5%;">
+                        <h3>Usuarios</h3>
+                      </div>
+                      <div class="row col-12" style="padding-left: 5%;">
+                        <form method="GET">
+                          <div class="input-group">              
+                            <input type="text"name="buscar"  class="form-control" id="navbar-search-input" placeholder="Código, Usuario, Estado" aria-label="search" aria-describedby="search" value="{{ request.GET.buscar }}">
+                            <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                              <button class="input-group-text" id="search">                             
+                                  <i class="icon-search"></i>                                                            
+                              </button>
+                            </div>
+                        </div>
+                        </form>              
+                        <div class="row col-12" style="padding-top: 2%; padding-left: 5%;">
+                            <div class="col-4">                          
+                              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Registrar nuevo Usuario</button>                        
+                              
+                              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                  <div class="modal-content">
+                                    <div class="modal-header bg-primary">
+                                      <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: #fff;">Registrar nuevo usuario</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="col-lg-12 contact-form__wrapper p-5 order-lg-1">
+                                          <form action="/dashboard-adm/detalleUsuarios/" method="POST" class="contact-form form-validate" novalidate="novalidate">
+                                              {% csrf_token %}
+                                              <div class="row">
+                                                  <!--Tipo de identificacion-->
+                                                  <div class="col-sm-12 mb-4">
+                                                      <div class="form-group">
+                                                          <label class="required-field" for="idType">Tipo de Identificación</label>
+                                                          <select class="form-control" id="idType" name="idType">
+                                                              <option value="cedula">Cédula</option>
+                                                              <option value="pasaporte">Pasaporte</option>
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                      
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label class="required-field" for="idNumber">Número de Identificación</label>
+                                                          <input type="text" class="form-control" id="idNumber" name="idNumber" placeholder="Cédula o Pasaporte">
+                                                      </div>
+                                                  </div>
+                      
+                                                  <!--Primer y segundo nombre-->
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label class="required-field" for="firstName">Nombre</label>
+                                                          <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Nombres">
+                                                      </div>
+                                                  </div>
+                                                  <!--
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="secondName">Segundo Nombre</label>
+                                                          <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Segundo Nombre">
+                                                      </div>
+                                                  </div>-->
+                      
+                                                  <!-- Apellido Paterno y Apellido Materno -->
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label class="required-field" for="lastName">Apellidos</label>
+                                                          <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Apellidos">
+                                                      </div>
+                                                  </div><!--
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="secondLastName">Apellido Materno</label>
+                                                          <input type="text" class="form-control" id="secondLastName" name="secondLastName" placeholder="Apellido Materno">
+                                                      </div>
+                                                  </div>-->
+                              
+                                                  <!-- Correo Electrónico y Género -->
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label class="required-field" for="email">Email</label>
+                                                          <input type="email" class="form-control" id="email" name="email" placeholder="Correo Electrónico">
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="gender">Género</label>
+                                                          <select class="form-control" id="gender" name="gender">
+                                                              <option value="1">Masculino</option>
+                                                              <option value="2">Femenino</option>
+                                                              <option value="3">Prefiero no decirlo</option>
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                      
+                                                  <!-- Edad y Teléfono -->
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="birthdate">Fecha de Nacimiento</label>
+                                                          <input type="date" class="form-control" id="birthdate" name="birthdate">
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="phone">Teléfono</label>
+                                                          <input type="tel" class="form-control" id="phone" name="phone" placeholder="+593">
+                                                      </div>
+                                                  </div>
+                                              
+                                                  Estado Civil y Rol de Usuario 
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="maritalStatus">Estado Civil</label>
+                                                          <select class="form-control" id="maritalStatus" name="maritalStatus">
+                                                              <option value="1">Soltero/a</option>
+                                                              <option value="2">Casado/a</option>
+                                                              <option value="3">Viudo/a</option>
+                                                              <option value="4">Divorciado/a</option>
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="userRole">Rol de Usuario</label>
+                                                          <select class="form-control" id="userRole" name="userRole">
+                                                              <option value="1">Docente</option>
+                                                              <option value="2">Estudiante</option>                                         
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                      
+                                                  <!-- Provincia y Ciudad -->
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="province">Provincia</label>
+                                                          <select class="form-control" id="province" name="province">
+                                                              <option value="guayas">Guayas</option>
+                                                              <option value="pichincha">Pichincha</option>                      
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="city">Ciudad</label>
+                                                          <select class="form-control" id="city" name="city">
+                                                              <option value="guayaquil">Guayaquil</option>
+                                                              <option value="quito">Quito</option>
+                                                              
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                      
+                                                   <!-- Dirección -->
+                                                  <div class="col-sm-12 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="address">Dirección</label>
+                                                          <input type="text" class="form-control" id="address" name="address" placeholder="Dirección Completa">
+                                                      </div>
+                                                  </div>
+                      
+                                                  <div class="col-sm-12 mb-4">
+                                                      <div class="form-group">
+                                                          <label class="required-field" for="codPulsera">Codigo Pulsera</label>
+                                                          <input type="text" class="form-control" id="codPulsera" name="codPulsera" placeholder="Código Pulsera">
+                                                      </div>
+                                                  </div>
+                      
+                                                  <!-- Contraseña y Repetir Contraseña (Ajustar IDs y Names) -->
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="password">Contraseña</label>
+                                                          <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-6 mb-4">
+                                                      <div class="form-group">
+                                                          <label for="confirmPassword">Repetir Contraseña</label>
+                                                          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Repetir Contraseña">
+                                                      </div>
+                                                  </div>
+                      
+                                                  <!-- Botón de Registro -->
+                                                  <div class="col-sm-12 mb-4">
+                                                      <button style="width: 50%; position: relative; left: 25%;" type="submit" name="submit" class="btn btn-primary">Registrarme</button>
+                                                  </div>
+                              
+                                              </div>
+                                          </form>
+                                      </div>
+                                    </div>                              
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+      
+                            <div class="col-4">                                                                   
+                              <a class="btn btn-primary" href="#" role="button"><i class="fas fa-screwdriver"></i>Configuración general</a>
+                            </div>
+                            
+                            <div class="col-4">
+                              <div class="btn-group btn-primary">
+                                <button type="button" class="btn btn-primary">Filtro</button>
+                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+                                  <span class="visually-hidden">Activos</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                  <li><a class="dropdown-item" href="#">Inactivos</a></li>
+                                  <li><a class="dropdown-item" href="#">Adquirido</a></li>
+                                  <li><a class="dropdown-item" href="#">Por Comprar</a></li>
+                                  <li><hr class="dropdown-divider"></li>
+                                  <li><a class="dropdown-item" href="#">Sin filtro</a></li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                      </div>                               
+                      <div class="row" style="padding: 5%; overflow-x: scroll;">
+                          <table class="table table-striped scroll-horizontal" style="overflow-x: scroll;">
+                              <caption>Lista de usuarios</caption>
+                              <thead class="table-light">
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">Id Usuario</th>
+                                  <th scope="col">Nombre de Usuario</th>
+                                  <th scope="col">Email</th>
+                                  <th scope="col">Ultimo Ingreso</th>
+                                  <th scope="col">Fecha de registro</th>
+                                  <th scope="col">ciudad</th>
+                                  <th scope="col">direccion</th>
+                                  <th scope="col" title="1:Administrador &#013; 2:Doctor&#013; 3:Paciente &#013; 4:Familiar">Rol</th>
+                                  <th scope="col">Estado</th>
+                                  <th scope="col">Opciones</th>
+                                </tr>
+                              </thead>
+                              <tbody style="overflow-x: scroll;">
+                                {% for user in usuarios %}                          
+                                <tr>
+                                  <td>{{cont}}</td>
+                                  <td>{{user.username}}</td>
+                                  <td>{{user.first_name}} , {{user.last_name}}</td>
+                                  <td>{{user.email}}</td>
+                                  <td>{{user.last_login}}</td> 
+                                  <td>{{user.date_joined}}</td> 
+                                  <td>{{user.ciudad}}</td> 
+                                  <td>{{user.direccion}}</td> 
+                                  <td>{{user.rol_id}}</td>                            
+                                  <td>
+                                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#activoInactivo" style="background-color:#37A7FE; ">
+                                          <div class="form-check form-switch">
+                                              <input class="form-check-input" type="checkbox" role="switch" style="background-color:#3788FF" id="flexSwitchCheckChecked" checked>
+                                              <label class="form-check-label" for="flexSwitchCheckChecked">Activo</label>
+                                          </div>
+                                      </button>        
+                                  </td>
+                                  <td>
+                                    <div class="btn-group" role="group">
+                                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-pen"></i>
+                                      </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                              
+                                              <li><a class="dropdown-item" href="#"style="text-decoration: none; color: inherit;" data-toggle="modal" data-target="#modalEditarDatos">Editar datos</a></li>                                            
+                                              
+                                            </li>
+                                            <li><a class="dropdown-item" href="#">Administrar</a></li>
+                                            <li><a class="dropdown-item" href="#">Ver</a></li>
+                                            <li><a class="dropdown-item" href="#">eliminar</a></li>
+                                        </ul>
+                                    </div> 
+      
+                                  </td>
+                                </tr>
+                                {% endfor %}                                                      
+                                      <!-- Modal -->
+                                      <div class="modal fade" id="activoInactivo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                          <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                              <h1 class="modal-title fs-5" id="exampleModalLabel">¿Estas seguro que deseas modificar el estado del usuario?</h1>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                              Recuerda que al cambiar su estado a inactivo este ya no podrá hacer uso de la plataforma
+                                              </div>
+                                              <div class="modal-footer">
+                                              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <form>
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                                              </form>
+                                              
+                                              </div>
+                                          </div>
+                                          </div>
+                                      </div>                                                        
+                                </tr>
+                                
+                              </tbody>
+                            </table>
+                      </div>
+                      
+      
+                  </div>
+      
+                </div>
+              </div>
+              
+        </div>
+      </div>
+    </div>
+    <!-- Modales de opcion Li  -->
+  <div class="modal fade" id="modalEditarDatos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-primary">
+          <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: #fff;">Edición del dispositivo</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/regitroDispositivo/" method="POST" class="contact-form form-validate" novalidate="novalidate">
+            {% csrf_token %}
+            <div class="mb-3 col-12 row">
+              <div class="col-5">
+                <label for="recipient-name" class="col-form-label">Número de serie</label>
+                <input type="text" class="form-control" id="numSerie" name="numSerie">
+              </div>
+              <div class="col-5">
+                <label for="recipient-name" class="col-form-label">Estado del dispositivo</label>
+                <select name="opEstado" class="form-select form-control" aria-label="Default select example">
+                  <option selected>Selecciona una opción</option>
+                  <option value="1">Disponible</option>
+                  <option value="2">Asignado</option>
+                  <option value="3">Vendido</option>
+                  <option value="4">Alquilado</option>
+                </select>
+
+              </div>                                                                      
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Tipo</label>
+              <select name="opTipo" class="form-select form-control" aria-label="Default select example">
+                <option selected>Selecciona una opción</option>
+                <option value="1">Pulsera</option>
+                <option value="2">Anillo</option>                                      
+              </select>
+            </div>
+            <div>                                    
+              <button style="width: 50%; position: relative; left: 25%;" type="submit" name="submit" class="btn btn-primary">Registrar</button>
+            </div>
+          </form>
+        </div>                              
+      </div>
+    </div>
+  </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>

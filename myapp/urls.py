@@ -12,6 +12,7 @@ urlpatterns = [
     path('dashboard-adm/actualizarLibros/', views.vistaActualizarLibro, name='actualizarLibros'),
     path('dashboard-adm/eliminarLibros/', views.vistaEliminarLibro, name='eliminarLibros'),
     path('dashboard-adm/verLibrosDigitales/', views.lista_libros_digitales, name='ver_libro_digital'),
+    path('dashboard-adm/detalleUsuarios/', views.detalleUsuarios, name='ver_libro_digital'),
     path('dashboard-adm/verLibrosDigitales/<int:libro_id>/', views.ver_libro_digital, name='ver_libro_digital'),
 
     path('dashboard-adm/revisarSolicitudes/', views.vistaAdminRevisarSolicitudes, name='adminRevisarSolicitudes'),

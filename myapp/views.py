@@ -229,6 +229,51 @@ def admin_dashboard(request):
     }    
     return render(request, 'vistaAdmin/index.html', context)
 
+def detalleUsuarios(request):
+    user = request.user
+    busqueda = request.GET.get("buscar")
+    usuarios = User.objects.all().order_by('-date_joined')
+    if busqueda:
+        usuarios = User.objects.filter(Q(username=busqueda)
+                                       | Q(first_name=busqueda)
+                                       | Q(last_name=busqueda)
+                                       | Q(email=busqueda)
+                                       | Q(ciudad=busqueda)).distinct()
+        print("entre al if de busqueda")
+    print("LISTADO DE USUARIOS")
+    print(usuarios)
+    if request.method == 'POST':
+        try:
+            script_js = f"""
+            alert("Usuario Creado correctamente")
+            """
+            context = {'script_js': script_js}
+            print("Apenas ingrese")
+            user = User.objects.create_user(username=request.POST['idNumber'],
+                                            password=request.POST['password'],
+                                            first_name=request.POST['firstName'],
+                                            last_name=request.POST['lastName'],
+                                            email=request.POST['email'],     
+                                            nacimiento=request.POST['birthdate'],
+                                            ciudad=request.POST['city'],
+                                            direccion=request.POST['address'],
+                                            rol_id=request.POST['userRole'])
+            print("Casi guardo")
+            rol_id=request.POST['userRole']
+            user.save()
+            # doctor=Medico.objects.create(estado_id=1, idDispositivo_id=1,idUsuario_id=user.id)
+            # doctor.save()
+            print("Se guardo correctamente")
+            print(user.rol_id)
+            
+            return render(request, 'vistaAdmin/detalleUsuarios.html', {'context': context, 'usuarios': usuarios})
+        except:
+            print("no se pudo")
+            return HttpResponse('Usuario ya existe')
+    return render(request, 'vistaAdmin/detalleUsuarios.html', {'usuarios': usuarios})
+
+
+
 
 @login_required
 def student_dashboard(request):
