@@ -19,13 +19,38 @@ import re
 
 def lista_libros_digitales(request):
     libros = LibroDigital.objects.all()
-    return render(request, 'vistaAdmin/lista_libros_digitales.html', {'libros': libros})
+    user=request.user
+    imgPerfil=user.picture
+    return render(request, 'vistaAdmin/lista_libros_digitales.html', {
+        'libros': libros,
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username
+        })
 
 def ver_libro_digital(request, libro_id):
     libro = get_object_or_404(LibroDigital, pk=libro_id)
     response = FileResponse(open(libro.archivo_pdf.path, 'rb'), content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="{libro.titulo}.pdf"'
     return response
+
+def lista_libros_digitales_Estudiante(request):
+    libros = LibroDigital.objects.all()
+    user=request.user
+    imgPerfil=user.picture
+    return render(request, 'vistaAdmin/lista_libros_digitales.html', 
+                  {'libros': libros,
+                   'imgPerfil': imgPerfil,        
+                    'usuario':user.username})
+
+def ver_libro_digital_Estudiante(request, libro_id):
+    libro = get_object_or_404(LibroDigital, pk=libro_id)
+    user=request.user
+    imgPerfil=user.picture
+    response = FileResponse(open(libro.archivo_pdf.path, 'rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{libro.titulo}.pdf"'
+    return response
+
+
 
 # Create your views here.
 def hello(request):
@@ -172,6 +197,7 @@ def admin_dashboard(request):
     user = request.user
     imgPerfil=user.picture
     total_solicitudes = SolicitudLibro.objects.count()
+    
 
     # 1. Cantidad de usuarios cuyo rol es igual a 2
     cantidad_usuarios_rol_2 = User.objects.filter(rol__id=2).count()
@@ -182,15 +208,24 @@ def admin_dashboard(request):
     # 3. Lista de la cantidad de estudiantes registrados en la última semana
     ultima_semana = now() - timedelta(days=7)
     estudiantes_ultima_semana = User.objects.filter(rol__id=2, date_joined__gte=ultima_semana)
+    diaActual=now()
 
+    ultimas3semanas = now() - timedelta(days=28)
+    histoSolicitud=SolicitudLibro.objects.filter(fecha_solicitud__gte=ultimas3semanas)
+    histoSolicitudes_ultimaS=SolicitudLibro.objects.filter(fecha_solicitud__gte=ultima_semana).count
+    print(f"Aqui van las solicitudes {histoSolicitud}")
     # Pasar los datos al contexto
     context = {
         'cantidad_usuarios_rol_2': cantidad_usuarios_rol_2,
         'cantidad_libros': cantidad_libros,
         'estudiantes_ultima_semana': estudiantes_ultima_semana,
         'imgPerfil': imgPerfil,
+        'ultima_semana':ultima_semana,
+        'diaActual':diaActual,
         'total_solicitudes': total_solicitudes,
-        'usuario':user.username
+        'usuario':user.username,
+        'histoSolicitud':histoSolicitud,
+        'histoSolicitudes_ultimaS':histoSolicitudes_ultimaS
     }    
     return render(request, 'vistaAdmin/index.html', context)
 

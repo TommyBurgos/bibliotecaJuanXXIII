@@ -53,6 +53,7 @@ class LibroDigital(models.Model):
     titulo = models.CharField(max_length=255)
     autor = models.CharField(max_length=255)
     descripcion = models.TextField(null=True, blank=True)
+    imgPortada = models.ImageField(upload_to='libros/digital/portadas', default='libros/defectoLibro.png')
     archivo_pdf = models.FileField(upload_to='libros/digital/pdf/')
     fecha_publicacion = models.DateField(null=True, blank=True)
 

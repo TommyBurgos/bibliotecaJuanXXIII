@@ -24,6 +24,8 @@ urlpatterns = [
     path('student_dashboard/misLibrosLeidos/',views.vistaLibrosLeidos),
     path('student_dashboard/solicitudesRealizadas/',views.vistaSolicitudesRealizadas),
     path('student_dashboard/misFavoritos/',views.vistaFavoritos),
+    path('student_dashboard/verLibrosDigitales/', views.lista_libros_digitales_Estudiante, name='ver_libro_digital'),
+    path('student_dashboard/verLibrosDigitales/<int:libro_id>/', views.ver_libro_digital_Estudiante, name='ver_libro_digital'),
     path('logout/', views.signout),
     
 
